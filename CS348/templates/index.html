@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <!-- Left: Master To-Do List -->
+    <div class="todo-list">
+        <h1>Task Planner</h1>
+        <form action="{{ url_for('add_task') }}" method="post">
+            <input type="text" name="task_name" placeholder="Task Name" required>
+            <p style = "margin : 0px;">Planned Date</p>
+            <input type="date" name="planned_date" placeholder="Planned Date" required>
+            <p style = "margin : 0px;">Due Date</p>
+            <input type="date" name="due_date" placeholder="Due Date">
+            <button type="submit">Add Task</button>
+        </form>
+
+        <table>
+            <tr>
+                <th>Task</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.task_name }}</td>
+                <td>{{ task.due_date }}</td>
+                <td>
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                    <br>
+                    <a href="{{ url_for('update_task', task_id=task.task_id) }}">Update</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Right: Calendar View -->
+    <div class="calendar">
+        <h2>Upcoming Due Dates</h2>
+        <div class="week-view">
+            {% for date in week_dates %}
+                <div class="date-section">
+                    <h3>{{ date.strftime('%A, %b %d') }}</h3>
+                    <ul>
+                        {% for task in tasks_by_date[date.strftime('%Y-%m-%d')] %}
+                            <li>{{ task }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+        <h2>Planned To-Do Today</h2>
+    <div class="planned-todo">
+        <ul>
+            {% for task in planned_today %}
+                <li>
+                    {{ task.task_name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
+
+
+</div>
+{% endblock %}
